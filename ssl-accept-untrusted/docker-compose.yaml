@@ -2,17 +2,6 @@ version: '3'
 
 services:
 
-  client:
-    container_name: client
-    image: curlimages/curl
-    command: sleep infinity
-    volumes:
-    - ./client.local.crt:/etc/pki/tls/certs/client.local.crt
-    - ./client.local.key:/etc/pki/tls/private/client.local.key
-    - ./root-ca.crt:/etc/pki/tls/certs/root-ca.crt
-    - ./untrusted-client.local.crt:/etc/pki/tls/certs/untrusted-client.local.crt
-    - ./untrusted-client.local.key:/etc/pki/tls/private/untrusted-client.local.key
-
   gateway:
     container_name: gateway
     image: envoyproxy/envoy:v1.29.0
@@ -21,8 +10,10 @@ services:
     - ./gateway.local.crt:/etc/pki/tls/certs/gateway.local.crt
     - ./gateway.local.key:/etc/pki/tls/private/gateway.local.key
     - ./root-ca.crt:/etc/pki/tls/certs/root-ca.crt
+    ports:
+      - "8443:8443"
     depends_on:
-    - client
+    - server
 
   server:
     container_name: server
